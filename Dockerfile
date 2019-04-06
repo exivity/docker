@@ -1,1 +1,1 @@
-# todo
+FROM ubuntu:latest
