@@ -5,4 +5,4 @@ os:
 language: shell
 
 script:
-  - build.sh
+  - ./build.sh
