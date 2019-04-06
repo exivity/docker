@@ -1,0 +1,6 @@
+os:
+  - windows
+  - linux
+
+script:
+  - pwsh build.ps1
