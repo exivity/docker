@@ -7,5 +7,5 @@ elif [[ $TRAVIS_OS_NAME == 'windows' ]]; then
 fi
 
 docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
-docker build -f "$DOCKERFILE" -t exivity/base:latest .
-docker push exivity/base
+docker build -f "$DOCKERFILE" -t exivity/base:$TRAVIS_OS_NAME .
+docker push exivity/base:$TRAVIS_OS_NAME
