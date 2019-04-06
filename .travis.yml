@@ -2,5 +2,7 @@ os:
   - windows
   - linux
 
+language: shell
+
 script:
-  - pwsh build.ps1
+  - build.sh
