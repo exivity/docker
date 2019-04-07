@@ -5,13 +5,12 @@ os:
 language: shell
 
 stages:
-  - name: test
+  - test
   - name: deploy
     if: os = linux
 
 jobs:
   include:
-    - stage: test
-      script: bash build.sh
+    - script: bash build.sh
     - stage: deploy
       script: bash manifest.sh
