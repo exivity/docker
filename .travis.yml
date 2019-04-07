@@ -4,5 +4,14 @@ os:
 
 language: shell
 
-script:
-  - bash build.sh
+stages:
+  - name: build
+  - name: deploy
+    if: os = linux
+
+jobs:
+  include:
+    - stage: build
+      script: bash build.sh
+    - stage: deploy
+      script: bash manifest.sh
