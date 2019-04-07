@@ -1,16 +1,17 @@
-os:
-  - windows
-  - linux
-
 language: shell
 
 stages:
-  - test
-  - name: deploy
-    if: os = linux
+  - build
+  - deploy
 
 jobs:
   include:
-    - script: bash build.sh
+    - stage: build
+      os: linux
+      script: ./build.sh
+    - stage: build
+      os: windows
+      script: bash build.sh
     - stage: deploy
-      script: bash manifest.sh
+      os: linux
+      script: ./manifest.sh
