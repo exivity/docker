@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-echo '{"experimental":true}' > ~/.docker/config.json
-#echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
 sudo service docker restart
 docker version -f '{{.Server.Experimental}}'
 
