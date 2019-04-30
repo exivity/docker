@@ -2,6 +2,8 @@
 
 export DOCKER_CLI_EXPERIMENTAL=enabled
 
+docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
+
 docker manifest create "exivity/base:latest" \
   "exivity/base:linux" \
   "exivity/base:windows"
