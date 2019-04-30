@@ -4,6 +4,8 @@ stages:
   - build
   - deploy
 
+filter_secrets: false
+
 jobs:
   include:
     - stage: build
