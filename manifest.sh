@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# @todo: verify experimental is enabled
-# echo '{ "experimental": "enabled" }' > ~/.docker/config.json
+echo '{"experimental":true}' > ~/.docker/config.json
+#echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+sudo service docker restart
+docker version -f '{{.Server.Experimental}}'
 
 docker -D manifest create "exivity/base:latest" \
   "exivity/base:linux" \
