@@ -12,11 +12,8 @@ FROM ${WindowsServerCoreRepo}:$WindowsServerCoreVersion AS installer-env
 
 # Arguments for installing PowerShell, must be defined in the container they are used
 ARG PS_VERSION=6.2.0
-
 ARG PS_PACKAGE_URL=https://github.com/PowerShell/PowerShell/releases/download/v$PS_VERSION/PowerShell-$PS_VERSION-win-x64.zip
-
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-
 ARG PS_PACKAGE_URL_BASE64
 
 RUN Write-host "Verifying valid Version..."; `
