@@ -1,6 +1,6 @@
 # escape=`
-ARG core=mcr.microsoft.com/windows/servercore:1803
-ARG target=mcr.microsoft.com/windows/nanoserver:1803
+ARG core=mcr.microsoft.com/windows/servercore:1809
+ARG target=mcr.microsoft.com/windows/nanoserver:1809
 
 # Use server core as an installer container
 # As this is a multi-stage build, this stage will eventually be thrown away
@@ -113,7 +113,7 @@ RUN pwsh `
   }"
 
 # Copy Node from installer container
-COPY --from=installer-env /nodejs/node.exe "$ProgramFiles\\Node"
+COPY --from=installer-env /nodejs/node.exe "$ProgramFiles\\Node\node.exe"
 
 # Set the path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\Node"
