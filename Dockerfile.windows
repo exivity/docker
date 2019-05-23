@@ -1,66 +1,119 @@
 # escape=`
-# Args used by from statements must be defined here:
-ARG WindowsServerCoreRepo=mcr.microsoft.com/windows/servercore
-ARG WindowsServerCoreVersion=1803
+ARG core=mcr.microsoft.com/windows/servercore:1809
+ARG target=mcr.microsoft.com/windows/nanoserver:1809
 
-ARG NanoServerRepo=stefanscherer/node-windows
-ARG NanoServerVersion=10-pure
-
-# Use server core as an installer container to extract PowerShell,
+# Use server core as an installer container
 # As this is a multi-stage build, this stage will eventually be thrown away
-FROM ${WindowsServerCoreRepo}:$WindowsServerCoreVersion AS installer-env
+FROM $core AS installer-env
 
-# Arguments for installing PowerShell, must be defined in the container they are used
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Install PowerShell
+# source: https://github.com/PowerShell/PowerShell-Docker/blob/master/release/stable/nanoserver/docker/Dockerfile
 ARG PS_VERSION=6.2.0
 ARG PS_PACKAGE_URL=https://github.com/PowerShell/PowerShell/releases/download/v$PS_VERSION/PowerShell-$PS_VERSION-win-x64.zip
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 ARG PS_PACKAGE_URL_BASE64
 
 RUN Write-host "Verifying valid Version..."; `
-    if (!($env:PS_VERSION -match '^\d+\.\d+\.\d+(-\w+(\.\d+)?)?$' )) { `
-        throw ('PS_Version ({0}) must match the regex "^\d+\.\d+\.\d+(-\w+(\.\d+)?)?$"' -f $env:PS_VERSION) `
-    } `
-    $ProgressPreference = 'SilentlyContinue'; `
-    if($env:PS_PACKAGE_URL_BASE64){ `
-        Write-host "decoding: $env:PS_PACKAGE_URL_BASE64" ;`
-        $url = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($env:PS_PACKAGE_URL_BASE64)) `
-    } else { `
-        Write-host "using url: $env:PS_PACKAGE_URL" ;`
-        $url = $env:PS_PACKAGE_URL `
-    } `
-    Write-host "downloading: $url"; `
-    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; `
-    Invoke-WebRequest -Uri $url -outfile /powershell.zip -verbose; `
-    Expand-Archive powershell.zip -DestinationPath \PowerShell
+  if (!($env:PS_VERSION -match '^\d+\.\d+\.\d+(-\w+(\.\d+)?)?$' )) { `
+  throw ('PS_Version ({0}) must match the regex "^\d+\.\d+\.\d+(-\w+(\.\d+)?)?$"' -f $env:PS_VERSION) `
+  } `
+  $ProgressPreference = 'SilentlyContinue'; `
+  if($env:PS_PACKAGE_URL_BASE64){ `
+  Write-host "decoding: $env:PS_PACKAGE_URL_BASE64" ;`
+  $url = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($env:PS_PACKAGE_URL_BASE64)) `
+  } else { `
+  Write-host "using url: $env:PS_PACKAGE_URL" ;`
+  $url = $env:PS_PACKAGE_URL `
+  } `
+  Write-host "downloading: $url"; `
+  [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; `
+  Invoke-WebRequest -Uri $url -outfile /powershell.zip -verbose; `
+  Expand-Archive powershell.zip -DestinationPath \PowerShell
 
-# Install PowerShell into NanoServer
-FROM ${NanoServerRepo}:${NanoServerVersion}
+# Install Node
+# source: https://github.com/StefanScherer/dockerfiles-windows/blob/master/node/10/pure/Dockerfile
+
+ENV GPG_VERSION 2.3.4
+
+RUN Invoke-WebRequest $('https://files.gpg4win.org/gpg4win-vanilla-{0}.exe' -f $env:GPG_VERSION) -OutFile 'gpg4win.exe' -UseBasicParsing ; `
+  Start-Process .\gpg4win.exe -ArgumentList '/S' -NoNewWindow -Wait
+
+RUN @( `
+  '94AE36675C464D64BAFA68DD7434390BDBE9B9C5', `
+  'FD3A5288F042B6850C66B31F09FE44734EB7990E', `
+  '71DCFD284A79C3B38668286BC97EC7A07EDE3FC1', `
+  'DD8F2338BAE7501E3DD5AC78C273792F7D83545D', `
+  'C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8', `
+  'B9AE9905FFD7803F25714661B63B535A4C206CA9', `
+  '77984A986EBC2AA786BC0F66B01FBB92821C587A', `
+  '8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600', `
+  '4ED778F539E3634C779C87C6D7062848A1AB005C', `
+  'A48C2BEE680E841632CD4E44F07496B3EB3C1762', `
+  'B9E2F5981AA6E0CD28160D9FF13993A75599653C' `
+  ) | foreach { `
+  gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $_ ; `
+  }
+
+ENV NODE_VERSION 10.15.3
+
+RUN Invoke-WebRequest $('https://nodejs.org/dist/v{0}/SHASUMS256.txt.asc' -f $env:NODE_VERSION) -OutFile 'SHASUMS256.txt.asc' -UseBasicParsing ; `
+  gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc
+
+RUN Invoke-WebRequest $('https://nodejs.org/dist/v{0}/node-v{0}-win-x64.zip' -f $env:NODE_VERSION) -OutFile 'node.zip' -UseBasicParsing ; `
+  $sum = $(cat SHASUMS256.txt.asc | sls $('  node-v{0}-win-x64.zip' -f $env:NODE_VERSION)) -Split ' ' ; `
+  if ((Get-FileHash node.zip -Algorithm sha256).Hash -ne $sum[0]) { Write-Error 'SHA256 mismatch' } ; `
+  Expand-Archive node.zip -DestinationPath C:\ ; `
+  Rename-Item -Path $('C:\node-v{0}-win-x64' -f $env:NODE_VERSION) -NewName 'C:\nodejs'
+
+ENV YARN_VERSION 1.13.0
+
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
+  Invoke-WebRequest $('https://yarnpkg.com/downloads/{0}/yarn-{0}.msi' -f $env:YARN_VERSION) -OutFile yarn.msi -UseBasicParsing ; `
+  $sig = Get-AuthenticodeSignature yarn.msi ; `
+  if ($sig.Status -ne 'Valid') { Write-Error 'Authenticode signature is not valid' } ; `
+  Write-Output $sig.SignerCertificate.Thumbprint ; `
+  if (@( `
+  '7E253367F8A102A91D04829E37F3410F14B68A5F', `
+  'AF764E1EA56C762617BDC757C8B0F3780A0CF5F9' `
+  ) -notcontains $sig.SignerCertificate.Thumbprint) { Write-Error 'Unknown signer certificate' } ; `
+  Start-Process msiexec.exe -ArgumentList '/i', 'yarn.msi', '/quiet', '/norestart' -NoNewWindow -Wait
+
+
+# Install PowerShell and Node into NanoServer
+FROM $target
 
 # Copy PowerShell Core from the installer container
 ENV ProgramFiles="C:\Program Files" `
-    # set a fixed location for the Module analysis cache
-    LOCALAPPDATA="C:\Users\ContainerAdministrator\AppData\Local" `
-    PSModuleAnalysisCachePath="$LOCALAPPDATA\Microsoft\Windows\PowerShell\docker\ModuleAnalysisCache" `
-    # Persist %PSCORE% ENV variable for user convenience
-    PSCORE="$ProgramFiles\PowerShell\pwsh.exe"
+  # set a fixed location for the Module analysis cache
+  LOCALAPPDATA="C:\Users\ContainerAdministrator\AppData\Local" `
+  PSModuleAnalysisCachePath="$LOCALAPPDATA\Microsoft\Windows\PowerShell\docker\ModuleAnalysisCache" `
+  # Persist %PSCORE% ENV variable for user convenience
+  PSCORE="$ProgramFiles\PowerShell\pwsh.exe"
 
-COPY --from=installer-env ["\\PowerShell\\", "$ProgramFiles\\PowerShell"]
+COPY --from=installer-env "\\PowerShell\\" "$ProgramFiles\\PowerShell"
 
 # Set the path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\PowerShell"
 
 # intialize powershell module cache
 RUN pwsh `
-        -NoLogo `
-        -NoProfile `
-        -Command " `
-          $stopTime = (get-date).AddMinutes(15); `
-          $ErrorActionPreference = 'Stop' ; `
-          $ProgressPreference = 'SilentlyContinue' ; `
-          while(!(Test-Path -Path $env:PSModuleAnalysisCachePath)) {  `
-            Write-Host "'Waiting for $env:PSModuleAnalysisCachePath'" ; `
-            if((get-date) -gt $stopTime) { throw 'timout expired'} `
-            Start-Sleep -Seconds 6 ; `
-          }"
+  -NoLogo `
+  -NoProfile `
+  -Command " `
+  $stopTime = (get-date).AddMinutes(15); `
+  $ErrorActionPreference = 'Stop' ; `
+  $ProgressPreference = 'SilentlyContinue' ; `
+  while(!(Test-Path -Path $env:PSModuleAnalysisCachePath)) {  `
+  Write-Host "'Waiting for $env:PSModuleAnalysisCachePath'" ; `
+  if((get-date) -gt $stopTime) { throw 'timout expired'} `
+  Start-Sleep -Seconds 6 ; `
+  }"
 
-CMD ["pwsh.exe"]
+# Copy Node from installer container
+COPY --from=installer-env /nodejs/node.exe "$ProgramFiles\\Node"
+
+# Set the path
+RUN setx /M PATH "%PATH%;%ProgramFiles%\Node"
+
+CMD ["cmd.exe"]
