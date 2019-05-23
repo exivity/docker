@@ -83,6 +83,8 @@ RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tl
 # Install PowerShell and Node into NanoServer
 FROM $target
 
+USER Administrator
+
 # Copy PowerShell Core from the installer container
 ENV ProgramFiles="C:\Program Files" `
   # set a fixed location for the Module analysis cache
