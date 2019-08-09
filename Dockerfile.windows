@@ -1,6 +1,6 @@
 # escape=`
-ARG core=mcr.microsoft.com/windows/servercore:1809
-ARG target=mcr.microsoft.com/windows/nanoserver:1809
+ARG core=mcr.microsoft.com/windows/servercore:1803
+ARG target=mcr.microsoft.com/windows/nanoserver:1803
 
 # Use server core as an installer container
 # As this is a multi-stage build, this stage will eventually be thrown away
@@ -33,7 +33,6 @@ RUN Write-host "Verifying valid Version..."; `
 
 # Install Node
 # source: https://github.com/StefanScherer/dockerfiles-windows/blob/master/node/10/pure/Dockerfile
-
 ENV GPG_VERSION 2.3.4
 
 RUN Invoke-WebRequest $('https://files.gpg4win.org/gpg4win-vanilla-{0}.exe' -f $env:GPG_VERSION) -OutFile 'gpg4win.exe' -UseBasicParsing ; `
