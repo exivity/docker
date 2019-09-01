@@ -145,7 +145,7 @@ RUN pwsh `
 # Copy Node, Yarn and Git from installer container
 COPY --from=installer-env /nodejs/node.exe "$ProgramFiles\\Node\node.exe"
 COPY --from=installer-env [ "c:/Program Files (x86)/yarn", "$ProgramFiles/Yarn" ]
-COPY --from=installer-env [ "c:/git", "$ProgramFiles\Git" ]
+COPY --from=installer-env [ "c:/git", "$ProgramFiles/Git" ]
 
 # Set the path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\Node"
