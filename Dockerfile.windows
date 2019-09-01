@@ -1,10 +1,12 @@
 # escape=`
-ARG core=mcr.microsoft.com/windows/servercore:1803
-ARG target=mcr.microsoft.com/windows/nanoserver:1803
+ARG build=1903
+ARG source=mcr.microsoft.com/windows/servercore:$build
+# ARG target=mcr.microsoft.com/windows/nanoserver:$build
+ARG target=$source
 
 # Use server core as an installer container
 # As this is a multi-stage build, this stage will eventually be thrown away
-FROM $core AS installer-env
+FROM $source AS installer-env
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -78,11 +80,40 @@ RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tl
   ) -notcontains $sig.SignerCertificate.Thumbprint) { Write-Error 'Unknown signer certificate' } ; `
   Start-Process msiexec.exe -ArgumentList '/i', 'yarn.msi', '/quiet', '/norestart' -NoNewWindow -Wait
 
+ENV GIT_VERSION 2.20.1
+ENV GIT_DOWNLOAD_URL https://github.com/git-for-windows/git/releases/download/v${GIT_VERSION}.windows.1/MinGit-${GIT_VERSION}-busybox-64-bit.zip
+ENV GIT_SHA256 9817ab455d9cbd0b09d8664b4afbe4bbf78d18b556b3541d09238501a749486c
 
-# Install PowerShell and Node into NanoServer
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
+  Invoke-WebRequest -UseBasicParsing $env:GIT_DOWNLOAD_URL -OutFile git.zip; `
+  if ((Get-FileHash git.zip -Algorithm sha256).Hash -ne $env:GIT_SHA256) {exit 1} ; `
+  Expand-Archive git.zip -DestinationPath C:\git; `
+  Remove-Item git.zip
+
+# Install vcredist
+# source: https://github.com/StefanScherer/dockerfiles-windows/blob/master/mongo/3.6/Dockerfile
+# list of dlls: https://docs.microsoft.com/en-us/cpp/windows/determining-which-dlls-to-redistribute?view=vs-2019
+RUN Write-Host ('Downloading Visual C++ Redistributable Package')
+RUN Invoke-WebRequest -Uri https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe -OutFile vcredist.exe
+RUN Start-Process .\vcredist.exe -ArgumentList '/install', '/quiet', '/norestart' -NoNewWindow -Wait
+RUN mkdir C:\vcredist ; `
+  cp C:\windows\system32\msvcp140.dll C:\vcredist ; `
+  cp C:\windows\system32\vccorlib140.dll C:\vcredist ; `
+  cp C:\windows\system32\vcruntime140.dll C:\vcredist ; `
+  cp C:\windows\system32\concrt140.dll C:\vcredist ; `
+  cp C:\windows\system32\mfc140.dll C:\vcredist ; `
+  cp C:\windows\system32\mfc140u.dll C:\vcredist ; `
+  cp C:\windows\system32\mfcm140.dll C:\vcredist ; `
+  cp C:\windows\system32\mfcm140u.dll C:\vcredist ; `
+  cp C:\windows\system32\vcamp140.dll C:\vcredist ; `
+  cp C:\windows\system32\vcomp140.dll C:\vcredist
+
+# Install PowerShell and Node into -nanoserver- servercore
 FROM $target
 
-USER Administrator
+# Administrator should be used on nanoserver
+# USER Administrator
+USER ContainerAdministrator
 
 # Copy PowerShell Core from the installer container
 ENV ProgramFiles="C:\Program Files" `
@@ -92,7 +123,7 @@ ENV ProgramFiles="C:\Program Files" `
   # Persist %PSCORE% ENV variable for user convenience
   PSCORE="$ProgramFiles\PowerShell\pwsh.exe"
 
-COPY --from=installer-env "\\PowerShell\\" "$ProgramFiles\\PowerShell"
+COPY --from=installer-env "\PowerShell" "$ProgramFiles\PowerShell"
 
 # Set the path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\PowerShell"
@@ -111,10 +142,19 @@ RUN pwsh `
   Start-Sleep -Seconds 6 ; `
   }"
 
-# Copy Node from installer container
+# Copy Node, Yarn and Git from installer container
 COPY --from=installer-env /nodejs/node.exe "$ProgramFiles\\Node\node.exe"
+COPY --from=installer-env [ "c:/Program Files (x86)/yarn", "$ProgramFiles/Yarn" ]
+COPY --from=installer-env [ "/git", "$ProgramFiles\Git" ]
 
 # Set the path
 RUN setx /M PATH "%PATH%;%ProgramFiles%\Node"
+RUN setx /M PATH "%PATH%;%ProgramFiles%\Yarn\bin"
+RUN setx /M PATH "%PATH%;%ProgramFiles%\Git\cmd"
+RUN setx /M PATH "%PATH%;%ProgramFiles%\Git\mingw64\bin"
+RUN setx /M PATH "%PATH%;%ProgramFiles%\Git\usr\bin"
+
+# Copy vcredist from installer container
+COPY --from=installer-env C:\vcredist C:\windows\system32
 
 CMD ["cmd.exe"]
