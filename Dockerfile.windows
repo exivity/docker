@@ -1,5 +1,5 @@
 # escape=`
-ARG build=1903
+ARG build=ltsc2019
 ARG source=mcr.microsoft.com/windows/servercore:$build
 # ARG target=mcr.microsoft.com/windows/nanoserver:$build
 ARG target=$source
