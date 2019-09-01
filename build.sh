@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
+if [[ $CI_PLATFORM == 'ubuntu-18.04' ]]; then
     DOCKERFILE=Dockerfile
-elif [[ $TRAVIS_OS_NAME == 'windows' ]]; then
+    TAG=linux
+elif [[ $CI_PLATFORM == 'windows-2019' ]]; then
     DOCKERFILE=Dockerfile.windows
+    TAG=windows
 fi
 
 docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
-docker build -f "$DOCKERFILE" -t exivity/base:$TRAVIS_OS_NAME .
-docker push exivity/base:$TRAVIS_OS_NAME
+docker build -f "$DOCKERFILE" -t exivity/base:$TAG .
+docker push exivity/base:$TAG

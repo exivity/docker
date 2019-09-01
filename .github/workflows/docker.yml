@@ -15,4 +15,19 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: build
+      run: bash build.sh
+      env:
+        CI_PLATFORM: ${{ matrix.os }}
+        DOCKER_HUB_USER: hongaar
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+jobs:
+  manifest:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - name: Build the Docker manifest
+      run: bash manifest.sh
+      env:
+        DOCKER_HUB_USER: hongaar
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
