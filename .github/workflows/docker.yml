@@ -21,8 +21,8 @@ jobs:
         DOCKER_HUB_USER: hongaar
         DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-jobs:
   manifest:
+    needs: build
     runs-on: ubuntu-18.04
     
     steps:
