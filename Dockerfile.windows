@@ -10,6 +10,8 @@ FROM $source AS installer-env
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
+RUN ping "google.com"
+
 # Install PowerShell
 # source: https://github.com/PowerShell/PowerShell-Docker/blob/master/release/stable/nanoserver/docker/Dockerfile
 ARG PS_VERSION=6.2.0
