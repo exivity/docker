@@ -3,7 +3,7 @@
 if [[ $CI_PLATFORM == 'ubuntu-18.04' ]]; then
     DOCKERFILE=Dockerfile
     TAG=linux
-elif [[ $CI_PLATFORM == 'windows-2019' ]]; then
+elif [[ $CI_PLATFORM == 'windows-latest' ]]; then
     DOCKERFILE=Dockerfile.windows
     TAG=windows
 fi
