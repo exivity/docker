@@ -1,6 +1,9 @@
 name: postgres
 
-on: [push]
+on:
+  push:
+    paths:
+      - "postgres/**"
 
 env:
   POSTGRES_VERSION: 12.3-2

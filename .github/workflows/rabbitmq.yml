@@ -1,6 +1,9 @@
 name: rabbitmq
 
-on: [push]
+on:
+  push:
+    paths:
+      - "rabbitmq/**"
 
 env:
   RABBITMQ_VERSION: 3.8.6
