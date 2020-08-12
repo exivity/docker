@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-if [[ $CI_PLATFORM == 'ubuntu-18.04' ]]; then
+if [[ $CI_PLATFORM == 'ubuntu-latest' ]]; then
     DOCKERFILE=Dockerfile.linux
     TAG=linux
-elif [[ $CI_PLATFORM == 'windows-2019' ]]; then
+elif [[ $CI_PLATFORM == 'windows-latest' ]]; then
     DOCKERFILE=Dockerfile.windows
     TAG=windows
 fi
