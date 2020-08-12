@@ -15,7 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build the Docker image
-        run: bash base/build.sh
+        run: |
+          cd base
+          bash build.sh
         env:
           CI_PLATFORM: ${{ matrix.os }}
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
