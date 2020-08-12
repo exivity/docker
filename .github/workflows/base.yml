@@ -1,6 +1,9 @@
 name: base
 
-on: [push]
+on:
+  push:
+    paths:
+      - "base/**"
 
 jobs:
   build:
