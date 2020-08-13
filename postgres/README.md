@@ -10,6 +10,8 @@ docker run --rm --detach \
   --name postgres exivity/postgres:latest
 ```
 
+A user `postgres` with default password `postgres` is available.
+
 ## Development
 
 ```
