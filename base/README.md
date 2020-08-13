@@ -14,11 +14,11 @@ docker run -it --rm exivity/base:latest
 
 Base image: _mcr.microsoft.com/windows/servercore:ltsc2019_
 
-- PowerShell 6.2.0
-- Node 10.15.3
+- PowerShell 7
+- Node 12
 - Visual C++ Redistributable for Visual Studio 2015
-- Yarn 1.13.0
-- Git for Windows 2.20.1
+- Yarn 1
+- Git for Windows 2
 
 Notes: Ideally _mcr.microsoft.com/windows/nanoserver:1903_ would be used for a 
 smaller footprint, but nginx for Windows is only available as a 32bit version

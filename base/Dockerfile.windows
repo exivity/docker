@@ -1,18 +1,21 @@
 # escape=`
-ARG build=ltsc2019
-ARG source=mcr.microsoft.com/windows/servercore:$build
-# ARG target=mcr.microsoft.com/windows/nanoserver:$build
-ARG target=$source
+ARG SOURCE=mcr.microsoft.com/windows/servercore:ltsc2019
+ARG TARGET=$SOURCE
 
 # Use server core as an installer container
 # As this is a multi-stage build, this stage will eventually be thrown away
-FROM $source AS installer-env
+FROM $SOURCE AS installer-env
+
+# Set versions
+ARG PS_VERSION=7.0.3
+ARG NODE_VERSION=12.18.3
+ARG YARN_VERSION=1.22.4
+ARG GIT_VERSION=2.28.0
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # Install PowerShell
 # source: https://github.com/PowerShell/PowerShell-Docker/blob/master/release/stable/nanoserver/docker/Dockerfile
-ARG PS_VERSION=6.2.0
 ARG PS_PACKAGE_URL=https://github.com/PowerShell/PowerShell/releases/download/v$PS_VERSION/PowerShell-$PS_VERSION-win-x64.zip
 ARG PS_PACKAGE_URL_BASE64
 
@@ -56,8 +59,6 @@ RUN @( `
   gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $_ ; `
   }
 
-ENV NODE_VERSION 10.15.3
-
 RUN Invoke-WebRequest $('https://nodejs.org/dist/v{0}/SHASUMS256.txt.asc' -f $env:NODE_VERSION) -OutFile 'SHASUMS256.txt.asc' -UseBasicParsing ; `
   gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc
 
@@ -66,8 +67,6 @@ RUN Invoke-WebRequest $('https://nodejs.org/dist/v{0}/node-v{0}-win-x64.zip' -f 
   if ((Get-FileHash node.zip -Algorithm sha256).Hash -ne $sum[0]) { Write-Error 'SHA256 mismatch' } ; `
   Expand-Archive node.zip -DestinationPath C:\ ; `
   Rename-Item -Path $('C:\node-v{0}-win-x64' -f $env:NODE_VERSION) -NewName 'C:\nodejs'
-
-ENV YARN_VERSION 1.13.0
 
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
   Invoke-WebRequest $('https://yarnpkg.com/downloads/{0}/yarn-{0}.msi' -f $env:YARN_VERSION) -OutFile yarn.msi -UseBasicParsing ; `
@@ -80,7 +79,6 @@ RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tl
   ) -notcontains $sig.SignerCertificate.Thumbprint) { Write-Error 'Unknown signer certificate' } ; `
   Start-Process msiexec.exe -ArgumentList '/i', 'yarn.msi', '/quiet', '/norestart' -NoNewWindow -Wait
 
-ENV GIT_VERSION 2.20.1
 ENV GIT_DOWNLOAD_URL https://github.com/git-for-windows/git/releases/download/v${GIT_VERSION}.windows.1/MinGit-${GIT_VERSION}-busybox-64-bit.zip
 ENV GIT_SHA256 9817ab455d9cbd0b09d8664b4afbe4bbf78d18b556b3541d09238501a749486c
 
@@ -109,7 +107,7 @@ RUN mkdir C:\vcredist ; `
   cp C:\windows\system32\vcomp140.dll C:\vcredist
 
 # Install PowerShell and Node into -nanoserver- servercore
-FROM $target
+FROM $TARGET
 
 # Administrator should be used on nanoserver
 # USER Administrator
