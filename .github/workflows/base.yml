@@ -3,6 +3,8 @@ name: base
 on:
   push:
     paths:
+      - ".github/workflows/base.yml"
+      - "*.sh"
       - "base/**"
 
 env:
