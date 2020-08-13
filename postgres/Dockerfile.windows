@@ -15,7 +15,7 @@ RUN Invoke-WebRequest 'http://download.microsoft.com/download/0/6/4/064F84EA-D1D
 
 FROM mcr.microsoft.com/windows/nanoserver:1809
 
-USER Administrator
+USER ContainerAdministrator
 
 COPY --from=download /pgsql /pgsql
 COPY --from=download /windows/system32/VCRUNTIME140.dll /pgsql/bin/VCRUNTIME140.dll
@@ -25,4 +25,12 @@ RUN setx /M PATH "C:\pgsql\bin;%PATH%"
 
 EXPOSE 5432
 
-CMD ["postgres"]
+HEALTHCHECK --interval=5s --timeout=60s CMD pg_isready
+
+USER ContainerUser
+
+RUN mkdir "C:/pgsql/data"
+RUN mkdir "C:/pgsql/log"
+RUN pg_ctl -D "C:/pgsql/data" init
+
+CMD ["C:/pgsql/bin/pg_ctl.exe", "-D", "C:/pgsql/data", "-l", "C:/pgsql/log/pgsql.log", "start"]
