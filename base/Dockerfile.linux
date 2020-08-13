@@ -1,5 +1,9 @@
 FROM ubuntu:latest
 
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg2
+
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -9,6 +13,5 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zip \
     git \
-    curl \
     nodejs \
     yarn
