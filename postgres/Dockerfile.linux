@@ -8,4 +8,4 @@ COPY healthcheck.sh /usr/local/bin/
 
 RUN chmod u+x /usr/local/bin/healthcheck.sh
 
-HEALTHCHECK --interval=5s --timeout=60s CMD ["/usr/local/bin/healthcheck.sh"]
+HEALTHCHECK --interval=5s --timeout=60s CMD ["healthcheck.sh"]
