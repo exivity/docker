@@ -5,26 +5,25 @@ on:
     paths:
       - "base/**"
 
+env:
+  IMAGE: base
+  VERSION: 1
+  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+  DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: false
       matrix:
-        node-version: [10.x]
         os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v1
-      - name: Build the Docker image
-        run: |
-          cd base
-          bash build.sh
+      - run: bash build.sh
         env:
           CI_PLATFORM: ${{ matrix.os }}
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   manifest:
     needs: build
@@ -32,8 +31,4 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Build the Docker manifest
-        run: bash base/manifest.sh
-        env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - run: bash manifest.sh

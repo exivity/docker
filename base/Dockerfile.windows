@@ -74,13 +74,14 @@ RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tl
   if ($sig.Status -ne 'Valid') { Write-Error 'Authenticode signature is not valid' } ; `
   Write-Output $sig.SignerCertificate.Thumbprint ; `
   if (@( `
-  '7E253367F8A102A91D04829E37F3410F14B68A5F', `
-  'AF764E1EA56C762617BDC757C8B0F3780A0CF5F9' `
+  '795D68C6828BD3D21B36EB15F7A31EE5873EBE8F' `
   ) -notcontains $sig.SignerCertificate.Thumbprint) { Write-Error 'Unknown signer certificate' } ; `
   Start-Process msiexec.exe -ArgumentList '/i', 'yarn.msi', '/quiet', '/norestart' -NoNewWindow -Wait
 
+# Install Git for Windows
+# source: https://github.com/StefanScherer/dockerfiles-windows/blob/9d3eb757d73a455908af9a1cab350ed7f36d49db/node/10/nano/Dockerfile
 ENV GIT_DOWNLOAD_URL https://github.com/git-for-windows/git/releases/download/v${GIT_VERSION}.windows.1/MinGit-${GIT_VERSION}-busybox-64-bit.zip
-ENV GIT_SHA256 9817ab455d9cbd0b09d8664b4afbe4bbf78d18b556b3541d09238501a749486c
+ENV GIT_SHA256 1D879A5AEA154676CD2BE8B947DCDFC0991F82B72DD5116A31146BAC923B7CCA
 
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
   Invoke-WebRequest -UseBasicParsing $env:GIT_DOWNLOAD_URL -OutFile git.zip; `
