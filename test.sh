@@ -51,8 +51,8 @@ docker run \
     exivity/$IMAGE:$LATEST_TAG
 
 echo "Running health check"
-# retry 5 means we will wait max 1+2+4+8+16 seconds
-retry 5 check_if_healthy
+# retry 6 means we will wait max 1+2+4+8+16 seconds
+retry 6 check_if_healthy
 
 echo "Stop Docker container $IMAGE"
 docker stop $IMAGE
