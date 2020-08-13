@@ -19,11 +19,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
 
+    env:
+      CI_PLATFORM: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v1
       - run: bash build.sh
-        env:
-          CI_PLATFORM: ${{ matrix.os }}
+      - run: bash test.sh
 
   manifest:
     needs: build
