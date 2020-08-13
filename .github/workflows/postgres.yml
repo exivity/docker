@@ -3,6 +3,8 @@ name: postgres
 on:
   push:
     paths:
+      - ".github/workflows/postgres.yml"
+      - "*.sh"
       - "postgres/**"
 
 env:

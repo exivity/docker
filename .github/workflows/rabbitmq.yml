@@ -3,6 +3,8 @@ name: rabbitmq
 on:
   push:
     paths:
+      - ".github/workflows/rabbitmq.yml"
+      - "*.sh"
       - "rabbitmq/**"
 
 env:
