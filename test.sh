@@ -30,7 +30,7 @@ function retry {
 }
 
 function get_health_status {
-  docker inspect --format="{{json .State.Health.Status}}" $IMAGE
+  docker inspect --format="{{json .State.Health.Status}}" test
 }
 
 function check_if_healthy {
@@ -43,16 +43,16 @@ function check_if_healthy {
 
 set -e
 
-echo "Running Docker image $IMAGE:$TAG in a container named $IMAGE"
+echo "Running Docker image exivity/$IMAGE:$LATEST_TAG in a container named test"
 docker run \
     --rm \
     --detach \
-    --name $IMAGE \
+    --name test \
     exivity/$IMAGE:$LATEST_TAG
 
 echo "Running health check"
 # retry 6 means we will wait max 1+2+4+8+16 seconds
-retry 6 check_if_healthy || (docker inspect $IMAGE && exit 1)
+retry 6 check_if_healthy || (docker inspect test && exit 1)
 
-echo "Stop Docker container $IMAGE"
-docker stop $IMAGE
+echo "Stop Docker container test"
+docker stop test

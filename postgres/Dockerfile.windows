@@ -33,4 +33,4 @@ RUN mkdir "C:/pgsql/data"
 RUN mkdir "C:/pgsql/log"
 RUN pg_ctl -D "C:/pgsql/data" init
 
-CMD ["C:/pgsql/bin/pg_ctl.exe", "-D", "C:/pgsql/data", "-l", "C:/pgsql/log/pgsql.log", "start"]
+CMD ["C:/pgsql/bin/postgres.exe", "-D", "C:/pgsql/data"]
