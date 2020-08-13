@@ -6,30 +6,29 @@ on:
       - "rabbitmq/**"
 
 env:
-  RABBITMQ_VERSION: 3.8.6
+  IMAGE: rabbitmq
+  VERSION: 3.8.6
+  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+  DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
 jobs:
   build:
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: bash
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
     steps:
       - uses: actions/checkout@v1
-      # - uses: satackey/action-docker-layer-caching@v0.0.5
-      - name: build
-        run: |
-          cd rabbitmq
-          docker build --build-arg VERSION=$RABBITMQ_VERSION --file Dockerfile.windows --tag exivity/rabbitmq:$RABBITMQ_VERSION .
-          docker tag exivity/rabbitmq:$RABBITMQ_VERSION exivity/rabbitmq:latest
-      - name: test
-        run: ./rabbitmq/test.sh
-      - name: login
-        run: echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USER --password-stdin
+      - run: bash build.sh
         env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: push
-        run: |
-          docker push exivity/rabbitmq:$RABBITMQ_VERSION
-          docker push exivity/rabbitmq:latest
+          CI_PLATFORM: ${{ matrix.os }}
+
+  manifest:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: bash manifest.sh

@@ -1,6 +1,6 @@
 # exivity/rabbitmq
 
-Docker image of Rabbit MQ server (Windows only).
+Docker image of Rabbit MQ server.
 
 ## Usage
 

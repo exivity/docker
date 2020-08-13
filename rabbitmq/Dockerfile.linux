@@ -1,0 +1,5 @@
+FROM rabbitmq
+
+COPY healthcheck.sh /usr/local/bin/
+
+HEALTHCHECK CMD ["healthcheck.sh"]
