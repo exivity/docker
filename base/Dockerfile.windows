@@ -1,16 +1,16 @@
 # escape=`
+
+ARG PS_VERSION=7.0.3
+ARG NODE_VERSION=12.18.3
+ARG YARN_VERSION=1.22.4
+ARG GIT_VERSION=2.28.0
+
 ARG SOURCE=mcr.microsoft.com/windows/servercore:ltsc2019
 ARG TARGET=$SOURCE
 
 # Use server core as an installer container
 # As this is a multi-stage build, this stage will eventually be thrown away
 FROM $SOURCE AS installer-env
-
-# Set versions
-ARG PS_VERSION=7.0.3
-ARG NODE_VERSION=12.18.3
-ARG YARN_VERSION=1.22.4
-ARG GIT_VERSION=2.28.0
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 

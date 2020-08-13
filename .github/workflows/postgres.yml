@@ -6,28 +6,30 @@ on:
       - "postgres/**"
 
 env:
-  POSTGRES_VERSION: 12.3-2
-  DOCKER_TAG: 12.3
+  IMAGE: postgres
+  VERSION: 12.3
+  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+  DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
 jobs:
   build:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: bash
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
     steps:
       - uses: actions/checkout@v1
-      - name: build
-        run: |
-          cd postgres
-          docker build --build-arg VERSION=$POSTGRES_VERSION --file Dockerfile.windows --tag exivity/postgres:$DOCKER_TAG .
-          docker tag exivity/postgres:$DOCKER_TAG exivity/postgres:latest
-      - name: login
-        run: echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USER --password-stdin
+      - run: bash build.sh
         env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: push
-        run: |
-          docker push exivity/postgres:$DOCKER_TAG
-          docker push exivity/postgres:latest
+          CI_PLATFORM: ${{ matrix.os }}
+          EXTRA_BUILD_ARG: 12.3-2
+
+  manifest:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: bash manifest.sh

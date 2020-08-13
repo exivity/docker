@@ -1,6 +1,6 @@
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
-
 ARG VERSION
+
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
 USER ContainerAdministrator
 

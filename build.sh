@@ -14,6 +14,7 @@ LATEST_TAG=latest-$PLATFORM
 
 docker build \
     --build-arg VERSION=$VERSION \
+    --build-arg EXTRA_BUILD_ARG=$EXTRA_BUILD_ARG \
     --file $DOCKERFILE \
     --tag exivity/$IMAGE:$VERSION_TAG \
     .

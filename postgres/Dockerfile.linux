@@ -1,6 +1,6 @@
 ARG VERSION
 
-FROM rabbitmq:$VERSION-management
+FROM postgres:$VERSION
 
 COPY healthcheck.sh /usr/local/bin/
 

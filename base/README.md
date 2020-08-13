@@ -1,6 +1,6 @@
 # exivity/base
 
-Multiarch Docker base image (Windows and Linux).
+Docker base image
 
 ## Usage
 
@@ -30,3 +30,6 @@ Base image: _ubuntu:latest_
 
 - zip
 - unzip
+- git
+- nodejs 12
+- yarn 1
