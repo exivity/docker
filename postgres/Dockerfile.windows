@@ -3,9 +3,9 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019 AS download
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-ARG VERSION
+ARG EXTRA_BUILD_ARG
 
-RUN Invoke-WebRequest $('https://get.enterprisedb.com/postgresql/postgresql-{0}-windows-x64-binaries.zip' -f $env:VERSION) -OutFile 'postgres.zip' -UseBasicParsing ; \
+RUN Invoke-WebRequest $('https://get.enterprisedb.com/postgresql/postgresql-{0}-windows-x64-binaries.zip' -f $env:EXTRA_BUILD_ARG) -OutFile 'postgres.zip' -UseBasicParsing ; \
     Expand-Archive postgres.zip -DestinationPath C:\ ; \
     Remove-Item postgres.zip
 
