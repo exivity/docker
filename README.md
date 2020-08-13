@@ -4,11 +4,15 @@
 
 A dev image with common tools pre-installed.
 
-- [exivity/base](base/README.md)
+| Image | Docker Hub | README | Latest version |
+|-------|------------|--------|----------------|
+| `exivity/base` | [Docker Hub](https://hub.docker.com/r/exivity/base) | [README.md](base/README.md) | ![Latest version](https://img.shields.io/docker/v/exivity/base?sort=semver) |
 
 ## OSS
 
 The images below support Windows and Linux hosts and have built-in healthchecks.
+| Image | Docker Hub | README | Latest version |
+|-------|------------|--------|----------------|
+| `exivity/postgres` | [Docker Hub](https://hub.docker.com/r/exivity/postgres) | [README.md](postgres/README.md) | ![Latest version](https://img.shields.io/docker/v/exivity/postgres?sort=semver) |
+| `exivity/rabbitmq` | [Docker Hub](https://hub.docker.com/r/exivity/rabbitmq) | [README.md](rabbitmq/README.md) | ![Latest version](https://img.shields.io/docker/v/exivity/rabbitmq?sort=semver) |
 
-- [exivity/postgres](postgres/README.md)
-- [exivity/rabbitmq](rabbitmq/README.md)
