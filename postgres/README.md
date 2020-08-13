@@ -1,4 +1,4 @@
-# exivity:postgres
+# exivity/postgres
 
 Docker image of PostgreSQL server (Windows only).
 

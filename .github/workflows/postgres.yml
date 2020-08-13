@@ -7,6 +7,7 @@ on:
 
 env:
   POSTGRES_VERSION: 12.3-2
+  DOCKER_TAG: 12.3
 
 jobs:
   build:
@@ -19,8 +20,8 @@ jobs:
       - name: build
         run: |
           cd postgres
-          docker build --build-arg VERSION=$POSTGRES_VERSION --file Dockerfile.windows --tag exivity/postgres:$POSTGRES_VERSION .
-          docker tag exivity/postgres:$POSTGRES_VERSION exivity/postgres:latest
+          docker build --build-arg VERSION=$POSTGRES_VERSION --file Dockerfile.windows --tag exivity/postgres:$DOCKER_TAG .
+          docker tag exivity/postgres:$DOCKER_TAG exivity/postgres:latest
       - name: login
         run: echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USER --password-stdin
         env:
@@ -28,5 +29,5 @@ jobs:
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: push
         run: |
-          docker push exivity/postgres:$POSTGRES_VERSION
+          docker push exivity/postgres:$DOCKER_TAG
           docker push exivity/postgres:latest
