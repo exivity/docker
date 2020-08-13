@@ -11,6 +11,11 @@ A dev image with common tools pre-installed.
 ## OSS
 
 The images below support Windows and Linux hosts and have built-in healthchecks.
+
+> ⚠ **WARNING**  
+> These images are meant as dev containers and have insecure defaults. Do not
+> use in production.
+
 | Image | Docker Hub | README | Latest version |
 |-------|------------|--------|----------------|
 | `exivity/postgres` | [Docker Hub](https://hub.docker.com/r/exivity/postgres) | [README.md](postgres/README.md) | ![Latest version](https://img.shields.io/docker/v/exivity/postgres?sort=semver) |

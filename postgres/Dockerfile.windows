@@ -33,4 +33,14 @@ RUN mkdir "C:/pgsql/data"
 RUN mkdir "C:/pgsql/log"
 RUN pg_ctl -D "C:/pgsql/data" init
 
+COPY postgresql.conf /pgsql/data/
+COPY pg_hba.conf /pgsql/data/
+
+RUN pg_ctl -D "C:/pgsql/data" start && \
+    createdb && \
+    createuser --createdb --superuser --createrole --inherit --login postgres && \
+    psql -c "ALTER USER postgres WITH PASSWORD 'postgres'; " && \
+    dropdb ContainerUser && \
+    pg_ctl -D "C:/pgsql/data" stop
+
 CMD ["C:/pgsql/bin/postgres.exe", "-D", "C:/pgsql/data"]
