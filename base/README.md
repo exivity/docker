@@ -1,16 +1,18 @@
-# exivity/docker
+# exivity/base
 
-Docker base images used at Exivity.
+Multiarch Docker base image (Windows and Linux).
 
-## tags
+## Usage
 
-### :latest
+```
+docker run -it --rm exivity/base:latest
+```
 
-Multiarch image containing both Windows and Linux images.
+## Software
 
-### :windows
+### Windows
 
-_mcr.microsoft.com/windows/servercore:1903_
+Base image: _mcr.microsoft.com/windows/servercore:ltsc2019_
 
 - PowerShell 6.2.0
 - Node 10.15.3
@@ -18,12 +20,13 @@ _mcr.microsoft.com/windows/servercore:1903_
 - Yarn 1.13.0
 - Git for Windows 2.20.1
 
-notes:
-- previously, we used _mcr.microsoft.com/windows/nanoserver:1903_ but this turned out to be incompatible with nginx, see https://social.msdn.microsoft.com/Forums/en-US/7c30cb71-d449-4910-8bf5-f56023f7218e/nginx-in-nanoserver-container
+Notes: Ideally _mcr.microsoft.com/windows/nanoserver:1903_ would be used for a 
+smaller footprint, but nginx for Windows is only available as a 32bit version
+(see https://social.msdn.microsoft.com/Forums/en-US/7c30cb71-d449-4910-8bf5-f56023f7218e/nginx-in-nanoserver-container)
 
-### :linux
+### Linux
 
-_ubuntu:latest_
+Base image: _ubuntu:latest_
 
 - zip
 - unzip
