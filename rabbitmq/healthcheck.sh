@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # https://github.com/docker-library/healthcheck/blob/master/rabbitmq/docker-healthcheck
 

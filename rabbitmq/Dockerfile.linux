@@ -4,4 +4,4 @@ FROM rabbitmq:$VERSION-management
 
 COPY healthcheck.sh /usr/local/bin/
 
-HEALTHCHECK CMD ["healthcheck.sh"]
+HEALTHCHECK --interval=5s --timeout=60s CMD ["healthcheck.sh"]
