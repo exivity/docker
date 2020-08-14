@@ -7,6 +7,6 @@ ENV POSTGRES_PASSWORD=postgres
 COPY healthcheck.sh /usr/local/bin/
 
 RUN chmod u+x /usr/local/bin/healthcheck.sh
-RUN echo max_prepared_transactions = 16 >> /var/lib/postgresql/data/postgresql.conf
+RUN echo max_prepared_transactions = 16 >> /usr/share/postgresql/postgresql.conf.sample
 
 HEALTHCHECK --interval=5s --timeout=60s CMD ["healthcheck.sh"]
