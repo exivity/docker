@@ -15,7 +15,7 @@ A user `postgres` with default password `postgres` is available.
 ## Development
 
 ```
-export POSTGRES_VERSION=12.3-2
+export POSTGRES_VERSION=13.0-1
 ```
 
 Build:
