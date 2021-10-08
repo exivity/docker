@@ -14,12 +14,38 @@ A user `postgres` with default password `postgres` is available.
 
 ## Development
 
+### Windows:
+
 ```
-export POSTGRES_VERSION=13.0-1
+export VERSION=14.0
+export EXTRA_BUILD_ARG=14.0-1
 ```
 
 Build:
 
 ```
-docker build --build-arg VERSION=$POSTGRES_VERSION --file Dockerfile.windows --tag exivity/postgres:$POSTGRES_VERSION .
+docker build \
+  --build-arg VERSION=$VERSION \
+  --build-arg EXTRA_BUILD_ARG=$EXTRA_BUILD_ARG \
+  --file Dockerfile.windows \
+  --tag exivity/postgres:$VERSION \
+  .
+```
+
+### Linux
+
+Windows:
+
+```
+export VERSION=14.0
+```
+
+Build:
+
+```
+docker build \
+  --build-arg VERSION=$VERSION \
+  --file Dockerfile.linux \
+  --tag exivity/postgres:$VERSION \
+  .
 ```
