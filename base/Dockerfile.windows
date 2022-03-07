@@ -1,5 +1,5 @@
 # escape=`
-ARG SOURCE=mcr.microsoft.com/windows/servercore:ltsc2019
+ARG SOURCE=mcr.microsoft.com/windows/servercore:ltsc2022
 ARG TARGET=$SOURCE
 
 # Use server core as an installer container
@@ -93,7 +93,7 @@ RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tl
 # source: https://github.com/StefanScherer/dockerfiles-windows/blob/master/mongo/3.6/Dockerfile
 # list of dlls: https://docs.microsoft.com/en-us/cpp/windows/determining-which-dlls-to-redistribute?view=vs-2019
 RUN Write-Host ('Downloading Visual C++ Redistributable Package')
-RUN Invoke-WebRequest -Uri https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe -OutFile vcredist.exe
+RUN Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vc_redist.x64.exe -OutFile vcredist.exe
 RUN Start-Process .\vcredist.exe -ArgumentList '/install', '/quiet', '/norestart' -NoNewWindow -Wait
 RUN mkdir C:\vcredist ; `
   cp C:\windows\system32\msvcp140.dll C:\vcredist ; `

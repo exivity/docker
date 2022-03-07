@@ -1,5 +1,5 @@
 
-FROM mcr.microsoft.com/windows/servercore:ltsc2019 AS download
+FROM mcr.microsoft.com/windows/servercore:ltsc2022 AS download
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
