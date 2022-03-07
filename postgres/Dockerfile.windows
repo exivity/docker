@@ -13,7 +13,7 @@ RUN Invoke-WebRequest 'http://download.microsoft.com/download/0/6/4/064F84EA-D1D
     Start-Process vcredist_x64.exe -ArgumentList '/install', '/passive', '/norestart' -NoNewWindow -Wait ; \
     Remove-Item vcredist_x64.exe
 
-FROM mcr.microsoft.com/windows/nanoserver:1809
+FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
 USER ContainerAdministrator
 

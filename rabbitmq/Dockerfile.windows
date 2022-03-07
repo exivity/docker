@@ -18,7 +18,7 @@ RUN curl ('https://github.com/rabbitmq/rabbitmq-server/releases/download/v{0}/ra
     Expand-Archive "$env:TEMP\rabbitmq-server.zip" -DestinationPath 'C:\Program Files\RabbitMQ Server'; \
     del "$env:TEMP\rabbitmq-server.zip";
 
-FROM mcr.microsoft.com/windows/nanoserver:1809
+FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
 ARG VERSION
 
