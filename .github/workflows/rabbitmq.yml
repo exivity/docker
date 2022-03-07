@@ -1,6 +1,7 @@
 name: rabbitmq
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - ".github/workflows/rabbitmq.yml"
