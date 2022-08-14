@@ -1,10 +1,10 @@
-name: postgres
+name: publishDockerImages
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/buildDockerImages.yml"
+      - ".github/workflows/publishDockerImages.yml"
       - "*.sh"
       - "postgresql/**"
 
