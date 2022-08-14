@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# Fail script in case of unset variables - see more here:
+# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
+set -o nounset
+
+# Fail scripts in case a command fails - see more here:
+# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
+set -o errexit
+
 OS_PREFIX_FOR_LINUX='ubuntu'
 OS_PREFIX_FOR_WINDOWS='windows'
 
