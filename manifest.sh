@@ -9,7 +9,7 @@ docker manifest create \
   "$DOCKER_IMAGE:$POSTGRESQL_VERSION-windows"
 
 # Create manifests for latest Docker image version
-docker manifest create `
+docker manifest create \
   "$DOCKER_IMAGE:latest" \
   "$DOCKER_IMAGE:latest-linux" \
   "$DOCKER_IMAGE:latest-windows"
