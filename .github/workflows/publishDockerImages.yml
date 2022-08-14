@@ -1,18 +1,18 @@
-name: rabbitmq
+name: publishDockerImages
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/rabbitmq.yml"
+      - ".github/workflows/publishDockerImages.yml"
       - "*.sh"
-      - "rabbitmq/**"
+      - "postgresql/**"
 
 env:
-  IMAGE: rabbitmq
-  VERSION: 3.8.6
-  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-  DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+  DOCKER_IMAGE: "satrapu/postgresql"
+  POSTGRESQL_VERSION: "14.0"
+  DOCKER_HUB_USER: "${{ secrets.DOCKER_HUB_USER }}"
+  DOCKER_HUB_TOKEN: "${{ secrets.DOCKER_HUB_TOKEN }}"
 
 jobs:
   build:
@@ -20,10 +20,11 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-22.04, windows-2022]
 
     env:
       CI_PLATFORM: ${{ matrix.os }}
+      EXTRA_BUILD_ARG: 14.0-1
 
     steps:
       - uses: actions/checkout@v1
@@ -32,7 +33,7 @@ jobs:
 
   manifest:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v1
