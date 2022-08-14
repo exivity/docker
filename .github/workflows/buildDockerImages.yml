@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/postgres.yml"
+      - ".github/workflows/buildDockerImages.yml"
       - "*.sh"
-      - "postgres/**"
+      - "postgresql/**"
 
 env:
-  IMAGE: postgres
+  DOCKER_IMAGE: "satrapu/postgresql"
   VERSION: "14.0"
-  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-  DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+  DOCKER_HUB_USER: "${{ secrets.DOCKER_HUB_USER }}"
+  DOCKER_HUB_TOKEN: "${{ secrets.DOCKER_HUB_TOKEN }}"
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
 
   manifest:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v1
