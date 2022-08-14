@@ -2,8 +2,8 @@
 
 cd $IMAGE
 
-$OS_PREFIX_FOR_LINUX = 'ubuntu'
-$OS_PREFIX_FOR_WINDOWS = 'windows'
+OS_PREFIX_FOR_LINUX='ubuntu'
+OS_PREFIX_FOR_WINDOWS='windows'
 
 if [[ $CI_PLATFORM == "$OS_PREFIX_FOR_LINUX"* ]]; then
     PLATFORM=linux
