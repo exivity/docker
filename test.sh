@@ -19,10 +19,12 @@ function retry {
   shift
 
   local count=0
+
   until "$@"; do
     exit=$?
     wait=$((2 ** $count))
     count=$(($count + 1))
+
     if [ $count -lt $retries ]; then
       echo "Retry $count/$retries exited $exit, retrying in $wait seconds..."
       sleep $wait
@@ -31,6 +33,7 @@ function retry {
       return $exit
     fi
   done
+
   return 0
 }
 
@@ -41,7 +44,7 @@ function get_health_status {
 function check_if_healthy {
   status=`get_health_status`
 
-  echo "Got status $status"
+  echo "Got status: $status"
 
   [[ $status == "\"healthy\"" ]]
 }
@@ -59,5 +62,6 @@ echo "Running health check ..."
 # retry 6 means we will wait max 1+2+4+8+16 seconds
 retry 6 check_if_healthy || (docker inspect test && exit 1)
 
-echo "Stop Docker container test"
+echo "Stopping Docker container 'test' ..."
 docker stop test
+echo 'Docker container has been successfully stopped'
