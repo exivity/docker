@@ -2,9 +2,12 @@
 
 cd $IMAGE
 
-if [[ $CI_PLATFORM == 'ubuntu-latest' ]]; then
+$OS_PREFIX_FOR_LINUX = 'ubuntu'
+$OS_PREFIX_FOR_WINDOWS = 'windows'
+
+if [[ $CI_PLATFORM == "$OS_PREFIX_FOR_LINUX"* ]]; then
     PLATFORM=linux
-elif [[ $CI_PLATFORM == 'windows-latest' ]]; then
+elif [[ $CI_PLATFORM == "$OS_PREFIX_FOR_WINDOWS"* ]]; then
     PLATFORM=windows
 fi
 
