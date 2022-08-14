@@ -30,4 +30,3 @@ docker tag $DOCKER_IMAGE:$VERSION_TAG $DOCKER_IMAGE:$LATEST_TAG
 echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USER --password-stdin
 docker push $DOCKER_IMAGE:$VERSION_TAG
 docker push $DOCKER_IMAGE:$LATEST_TAG
-
