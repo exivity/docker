@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-if [[ $CI_PLATFORM == 'ubuntu-latest' ]]; then
-    PLATFORM=linux
-elif [[ $CI_PLATFORM == 'windows-latest' ]]; then
-    PLATFORM=windows
+OS_PREFIX_FOR_LINUX='ubuntu'
+OS_PREFIX_FOR_WINDOWS='windows'
+
+if [[ $CI_PLATFORM == "$OS_PREFIX_FOR_LINUX"* ]]; then
+    DOCKER_PLATFORM='linux'
+    echo 'About to test Linux Docker container ...'
+elif [[ $CI_PLATFORM == "$OS_PREFIX_FOR_WINDOWS"* ]]; then
+    DOCKER_PLATFORM='windows'
+    echo 'About to test Windows Docker container ...'
 fi
 
 LATEST_TAG=latest-$PLATFORM
@@ -43,14 +48,14 @@ function check_if_healthy {
 
 set -e
 
-echo "Running Docker image satrapu/$IMAGE:$LATEST_TAG in a container named test"
+echo "Running Docker image $DOCKER_IMAGE:$LATEST_TAG in a container named 'test' ..."
 docker container run \
   --rm \
   --detach \
   --name test \
-  satrapu/$IMAGE:$LATEST_TAG
+  $DOCKER_IMAGE:$LATEST_TAG
 
-echo "Running health check"
+echo "Running health check ..."
 # retry 6 means we will wait max 1+2+4+8+16 seconds
 retry 6 check_if_healthy || (docker inspect test && exit 1)
 
