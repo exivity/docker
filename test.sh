@@ -11,7 +11,7 @@ elif [[ $CI_PLATFORM == "$OS_PREFIX_FOR_WINDOWS"* ]]; then
     echo 'About to test Windows Docker container ...'
 fi
 
-LATEST_TAG=latest-$PLATFORM
+LATEST_TAG=latest-$DOCKER_PLATFORM
 
 # https://gist.github.com/sj26/88e1c6584397bb7c13bd11108a579746
 function retry {

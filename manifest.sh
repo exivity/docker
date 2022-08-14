@@ -4,9 +4,9 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 
 # Version
 docker manifest create \
-  "satrapu/$IMAGE:$VERSION" \
-  "satrapu/$IMAGE:$VERSION-linux" \
-  "satrapu/$IMAGE:$VERSION-windows"
+  "satrapu/$IMAGE:$POSTGRESQL_VERSION" \
+  "satrapu/$IMAGE:$POSTGRESQL_VERSION-linux" \
+  "satrapu/$IMAGE:$POSTGRESQL_VERSION-windows"
 
 # Latest
 docker manifest create `
@@ -16,5 +16,5 @@ docker manifest create `
 
 echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USER --password-stdin
 
-docker manifest push "satrapu/$IMAGE:$VERSION"
+docker manifest push "satrapu/$IMAGE:$POSTGRESQL_VERSION"
 docker manifest push "satrapu/$IMAGE:latest"

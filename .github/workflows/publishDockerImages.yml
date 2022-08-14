@@ -10,7 +10,7 @@ on:
 
 env:
   DOCKER_IMAGE: "satrapu/postgresql"
-  VERSION: "14.0"
+  POSTGRESQL_VERSION: "14.0"
   DOCKER_HUB_USER: "${{ secrets.DOCKER_HUB_USER }}"
   DOCKER_HUB_TOKEN: "${{ secrets.DOCKER_HUB_TOKEN }}"
 

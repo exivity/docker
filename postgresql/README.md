@@ -25,10 +25,10 @@ Build:
 
 ```
 docker build \
-  --build-arg VERSION=$VERSION \
+  --build-arg VERSION=$POSTGRESQL_VERSION \
   --build-arg EXTRA_BUILD_ARG=$EXTRA_BUILD_ARG \
   --file Dockerfile.windows \
-  --tag satrapu/postgres:$VERSION \
+  --tag satrapu/postgres:$POSTGRESQL_VERSION \
   .
 ```
 
@@ -44,8 +44,8 @@ Build:
 
 ```
 docker build \
-  --build-arg VERSION=$VERSION \
+  --build-arg VERSION=$POSTGRESQL_VERSION \
   --file Dockerfile.linux \
-  --tag satrapu/postgres:$VERSION \
+  --tag satrapu/postgres:$POSTGRESQL_VERSION \
   .
 ```

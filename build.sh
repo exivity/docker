@@ -12,14 +12,14 @@ elif [[ $CI_PLATFORM == "$OS_PREFIX_FOR_WINDOWS"* ]]; then
 fi
 
 DOCKERFILE=Dockerfile.$DOCKER_PLATFORM
-VERSION_TAG=$VERSION-$DOCKER_PLATFORM
+VERSION_TAG=$POSTGRESQL_VERSION-$DOCKER_PLATFORM
 LATEST_TAG=latest-$DOCKER_PLATFORM
 
 # Enter the folder containing Dockerfiles
 cd ./postgresql
 
 docker build \
-    --build-arg VERSION=$VERSION \
+    --build-arg VERSION=$POSTGRESQL_VERSION \
     --build-arg EXTRA_BUILD_ARG=$EXTRA_BUILD_ARG \
     --file $DOCKERFILE \
     --tag $DOCKER_IMAGE:$VERSION_TAG \
