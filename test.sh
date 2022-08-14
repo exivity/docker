@@ -43,12 +43,12 @@ function check_if_healthy {
 
 set -e
 
-echo "Running Docker image exivity/$IMAGE:$LATEST_TAG in a container named test"
-docker run \
-    --rm \
-    --detach \
-    --name test \
-    exivity/$IMAGE:$LATEST_TAG
+echo "Running Docker image satrapu/$IMAGE:$LATEST_TAG in a container named test"
+docker container run \
+  --rm \
+  --detach \
+  --name test \
+  satrapu/$IMAGE:$LATEST_TAG
 
 echo "Running health check"
 # retry 6 means we will wait max 1+2+4+8+16 seconds

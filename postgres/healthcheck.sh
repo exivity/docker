@@ -14,7 +14,9 @@ args=(
 	--host "$host"
 	--username "$user"
 	--dbname "$db"
-	--quiet --no-align --tuples-only
+	--quiet 
+	--no-align
+	--tuples-only
 )
 
 if select="$(echo 'SELECT 1' | psql "${args[@]}")" && [ "$select" = '1' ]; then

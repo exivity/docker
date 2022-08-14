@@ -1,13 +1,13 @@
-# exivity/postgres
+# satrapu/postgres
 
-Docker image of PostgreSQL server
+Docker image for PostgreSQL server
 
 ## Usage
 
 ```
 docker run --rm --detach \
   -p 5432:5432 \
-  --name postgres exivity/postgres:latest
+  --name postgres satrapu/postgres:latest
 ```
 
 A user `postgres` with default password `postgres` is available.
@@ -28,7 +28,7 @@ docker build \
   --build-arg VERSION=$VERSION \
   --build-arg EXTRA_BUILD_ARG=$EXTRA_BUILD_ARG \
   --file Dockerfile.windows \
-  --tag exivity/postgres:$VERSION \
+  --tag satrapu/postgres:$VERSION \
   .
 ```
 
@@ -46,6 +46,6 @@ Build:
 docker build \
   --build-arg VERSION=$VERSION \
   --file Dockerfile.linux \
-  --tag exivity/postgres:$VERSION \
+  --tag satrapu/postgres:$VERSION \
   .
 ```
