@@ -26,15 +26,15 @@ LATEST_TAG=latest-$DOCKER_PLATFORM
 # Enter the folder containing Dockerfiles
 cd ./postgresql
 
-docker build \
+docker image build \
     --build-arg POSTGRESQL_VERSION=$POSTGRESQL_VERSION \
     --build-arg EXTRA_BUILD_ARG=$EXTRA_BUILD_ARG \
     --file $DOCKERFILE \
     --tag $DOCKER_IMAGE:$VERSION_TAG \
     .
 
-docker tag $DOCKER_IMAGE:$VERSION_TAG $DOCKER_IMAGE:$LATEST_TAG
+docker image tag $DOCKER_IMAGE:$VERSION_TAG $DOCKER_IMAGE:$LATEST_TAG
 
 echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USER --password-stdin
-docker push $DOCKER_IMAGE:$VERSION_TAG
-docker push $DOCKER_IMAGE:$LATEST_TAG
+docker image push $DOCKER_IMAGE:$VERSION_TAG
+docker image push $DOCKER_IMAGE:$LATEST_TAG
