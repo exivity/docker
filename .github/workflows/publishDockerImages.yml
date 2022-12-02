@@ -24,7 +24,6 @@ jobs:
 
     env:
       CI_PLATFORM: ${{ matrix.os }}
-      EXTRA_BUILD_ARG: 15.1-1
 
     steps:
       - uses: actions/checkout@v1
