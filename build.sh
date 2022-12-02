@@ -28,7 +28,6 @@ cd ./postgresql
 
 docker image build \
     --build-arg POSTGRESQL_VERSION=$POSTGRESQL_VERSION \
-    --build-arg EXTRA_BUILD_ARG=$EXTRA_BUILD_ARG \
     --file $DOCKERFILE \
     --tag $DOCKER_IMAGE:$VERSION_TAG \
     .

@@ -1,17 +1,17 @@
-
 FROM mcr.microsoft.com/windows/servercore:ltsc2022 AS download
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-ARG EXTRA_BUILD_ARG
+# Enable long paths.
+# See more here: https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#enable-long-paths-in-windows-10-version-1607-and-later.
+RUN New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force ;
 
-RUN Invoke-WebRequest $('https://get.enterprisedb.com/postgresql/postgresql-{0}-windows-x64-binaries.zip' -f $env:EXTRA_BUILD_ARG) -OutFile 'postgres.zip' -UseBasicParsing ; \
-    Expand-Archive postgres.zip -DestinationPath C:\ ; \
-    Remove-Item postgres.zip
+# Install PostgreSQL using the binaries provided by EDB, which are found here: https://www.enterprisedb.com/download-postgresql-binaries.
+RUN Invoke-WebRequest "https://sbp.enterprisedb.com/getfile.jsp?fileid=1258228" -OutFile "postgres.zip" -UseBasicParsing ; \
+    Expand-Archive "postgres.zip" -DestinationPath "C:/" ;
 
-RUN Invoke-WebRequest 'http://download.microsoft.com/download/0/6/4/064F84EA-D1DB-4EAA-9A5C-CC2F0FF6A638/vc_redist.x64.exe' -OutFile vcredist_x64.exe ; \
-    Start-Process vcredist_x64.exe -ArgumentList '/install', '/passive', '/norestart' -NoNewWindow -Wait ; \
-    Remove-Item vcredist_x64.exe
+RUN Invoke-WebRequest "http://download.microsoft.com/download/0/6/4/064F84EA-D1DB-4EAA-9A5C-CC2F0FF6A638/vc_redist.x64.exe" -OutFile "vcredist_x64.exe" ; \
+    Start-Process "vcredist_x64.exe" -ArgumentList "/install", "/passive", "/norestart" -NoNewWindow -Wait ;
 
 FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
@@ -21,7 +21,7 @@ COPY --from=download /pgsql /pgsql
 COPY --from=download /windows/system32/VCRUNTIME140.dll /pgsql/bin/VCRUNTIME140.dll
 COPY --from=download /windows/system32/msvcp140.dll /pgsql/bin/msvcp140.dll
 
-RUN setx /M PATH "C:\pgsql\bin;%PATH%"
+RUN setx /M PATH "C:/pgsql/bin;%PATH%"
 
 EXPOSE 5432
 
