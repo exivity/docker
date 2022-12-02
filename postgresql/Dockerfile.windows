@@ -4,10 +4,10 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 # PostgreSQL binaries provided by EDB can be found here: https://www.enterprisedb.com/download-postgresql-binaries.
 RUN Invoke-WebRequest $('https://sbp.enterprisedb.com/getfile.jsp?fileid=1258228') -OutFile 'postgres.zip' -UseBasicParsing ; \
-    Expand-Archive postgres.zip -DestinationPath C:\
+    Expand-Archive 'postgres.zip' -DestinationPath C:\ ;
 
-RUN Invoke-WebRequest 'http://download.microsoft.com/download/0/6/4/064F84EA-D1DB-4EAA-9A5C-CC2F0FF6A638/vc_redist.x64.exe' -OutFile vcredist_x64.exe ; \
-    Start-Process vcredist_x64.exe -ArgumentList '/install', '/passive', '/norestart' -NoNewWindow -Wait
+RUN Invoke-WebRequest 'http://download.microsoft.com/download/0/6/4/064F84EA-D1DB-4EAA-9A5C-CC2F0FF6A638/vc_redist.x64.exe' -OutFile 'vcredist_x64.exe' ; \
+    Start-Process 'vcredist_x64.exe' -ArgumentList '/install', '/passive', '/norestart' -NoNewWindow -Wait ;
 
 FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
