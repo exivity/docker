@@ -2,7 +2,13 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022 AS download
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# PostgreSQL binaries provided by EDB can be found here: https://www.enterprisedb.com/download-postgresql-binaries.
+# Install 7zip module since the "Expand-Archive" PowerShell command might fail in case of long paths.
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; \
+    Install-PackageProvider -Name NuGet -Force ; \
+    Set-PSRepository -Name 'PSGallery' -SourceLocation "https://www.powershellgallery.com/api/v2" -InstallationPolicy Trusted ; \
+    Install-Module -Name 7Zip4PowerShell -Force ;
+    
+# Install PostgreSQL using the binaries provided by EDB, which are found here: https://www.enterprisedb.com/download-postgresql-binaries.
 RUN Invoke-WebRequest $('https://sbp.enterprisedb.com/getfile.jsp?fileid=1258228') -OutFile 'postgres.zip' -UseBasicParsing ; \
     Expand-Archive 'postgres.zip' -DestinationPath C:\ ;
 
