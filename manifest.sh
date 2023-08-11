@@ -14,6 +14,6 @@ docker manifest create \
   "$DOCKER_IMAGE:latest-linux" \
   "$DOCKER_IMAGE:latest-windows"
 
-echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USER --password-stdin
+# Push manifests to Docker Hub
 docker manifest push "$DOCKER_IMAGE:$POSTGRESQL_VERSION"
 docker manifest push "$DOCKER_IMAGE:latest"
