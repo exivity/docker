@@ -23,7 +23,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - run: bash build.sh
         env:
           CI_PLATFORM: ${{ matrix.os }}
@@ -33,5 +33,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - run: bash manifest.sh
